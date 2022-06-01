@@ -1,0 +1,19 @@
+{
+  "name": "temiz-altyapi",
+  "version": "1.0.0",
+  "description": "İçinde gereksiz komut bulunmayan herkes tarafından kullanılabilir bir Discord.js altyapısı. Sadece slash komutlarını destekler.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "can#0002",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/rest": "^0.4.1",
+    "discord-api-types": "^0.31.2",
+    "discord-modals": "^1.3.5",
+    "discord.js": "^13.6.0",
+    "quick.db": "^7.1.3"
+  }
+}
