@@ -5,8 +5,7 @@ class Client {
   
   constructor(token) {
     (async () => {
-      const client = new Discord.Client({ intents: Object.keys(Discord.Intents.FLAGS) });
-      require('discord-modals')(client);
+      const client = new Discord.Client({ intents: Object.values(Discord.GatewayIntentBits).filter(bit => typeof bit == 'number') });
       this.client = client;
       this.client.database = require('quick.db');
       this.client.properties = require('./Application.config.js');

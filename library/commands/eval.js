@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder } = require('discord.js');
+const { inspect } = require('util');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -7,9 +8,31 @@ module.exports = {
   .toJSON(),
   execute: async interaction => {
     if (interaction.user.id != interaction.client.properties.developerId) return;
+
+    const row = new ActionRowBuilder().addComponents([new TextInputBuilder()
+    .setLabel('Code')
+    .setCustomId('code')
+    .setValue(interaction.client.database.get('last-evaluated-code') || '')
+    .setStyle(2)
+    .setPlaceholder('Code to evaluate.')
+    .setRequired(true)]);
+
+    return await interaction.showModal(new ModalBuilder().setCustomId('evulate-code').setTitle('Evulate Code').addComponents([row]));
+  },
+  events: {
+    submit: { 
+      'evulate-code': async interaction => {
+        await interaction.deferReply({ ephemeral: true });
+        let code = interaction.fields.getTextInputValue('code');
+        await interaction.client.database.set('last-evaluated-code', code);
     
-    const { Modal, TextInputComponent, showModal } = require('discord-modals');
-    const defaultValue = interaction.client.database.get('last-evaluated-code') || '';
-    return showModal(new Modal().setCustomId('evulate-code').setTitle('Evulate Code').addComponents(new TextInputComponent().setDefaultValue(defaultValue).setLabel('Code').setCustomId('code').setStyle('LONG').setPlaceholder('Code to evaluate.').setRequired(true)), { client: interaction.client, interaction });
+        try {
+          const result = await eval(!code.includes('await') ? code : `(async () => { ${code} })()`);
+          return interaction.followUp({ content: '```js\n' + inspect(result, { depth: 0 }).slice(0, 1990) + '```' });
+        } catch(error) {
+          return interaction.followUp({ content: '```js\n' + inspect(error, { depth: 0 }).slice(0, 1990) + '```' });
+        };
+      }
+    }
   }
 };
