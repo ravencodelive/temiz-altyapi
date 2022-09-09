@@ -28,7 +28,7 @@ class Client {
       for (const file of files) {
         const event = require(`../events/${file}`);
         const eventName = file.split('.')[0];
-        this.client.on(eventName, (...args) => event(...args, this.client));
+        this.client.on(eventName, (...args) => event(this.client, ...args));
       };
       return resolve();
     });
