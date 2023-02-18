@@ -17,11 +17,11 @@ module.exports = {
     .setPlaceholder('Code to evaluate.')
     .setRequired(true)]);
 
-    return await interaction.showModal(new ModalBuilder().setCustomId('evulate-code').setTitle('Evulate Code').addComponents([row]));
+    return await interaction.showModal(new ModalBuilder().setCustomId('evaluate-code').setTitle('Evaluate Code').addComponents([row]));
   },
   events: {
     submit: { 
-      'evulate-code': async interaction => {
+      'evaluate-code': async interaction => {
         await interaction.deferReply({ ephemeral: true });
         let code = interaction.fields.getTextInputValue('code');
         await interaction.client.database.set('last-evaluated-code', code);
